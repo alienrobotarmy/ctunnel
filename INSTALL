@@ -1,0 +1,21 @@
+
+Copyright (c) 2009-2014 Jess Mahan <ctunnel-`date + %s`>@nardcore.org
+
+----------------
+ctunnel    0.7
+----------------
+
+  BUILDING:
+
+  CRYPTO_TYPE
+  ctunnel can either be compiled with OpenSSL or libgcrypt. By default,
+  libgcrypt is enabled, however, you can change this in the Makefile.cfg
+  located in this directory.
+
+  Simply edit the Makefile.cfg, and set CRYPTO_TYPE to either GCRYPT or
+  OPENSSL.
+  
+  PREFIX
+  To set the install path of ctunnel, simply edit the Makefile.cfg, and
+  set PREFIX to the desired path. By default, ctunnel is installed
+  to /usr/local (/usr/local/bin, /usr/local/man).

@@ -1,0 +1,46 @@
+2014-08-05  Jess Mahan <ctunnel-`date +%s`@nardcore.org>
+	* 0.7 Release
+	* VPN Support (Requires TUNTAP Driver, or PPP)
+	* Plain/Proxy Support
+	* Fixed UDP Tunneling
+	* Post connection up exec
+	* Bandwidth Meter (-S)
+
+2011-02-13  Jess Mahan <ctunnel-`date +%s`@nardcore.org>
+	* 0.6 Release
+	* Fixed high CPU utilization in select() timeout
+	* Lowered heap usage
+	* Fixed slight memory leak in pthread management
+	* Smarter thread management, fixing a segfault
+
+2011-02-12  Jess Mahan <ctunnel-`date +%s`@nardcore.org>
+	* 0.5 Release
+	* Fixed crash in tunnel, when remote unavailable
+	* Fixed memory leaks in pthread code
+	* Code cleanup
+
+2010-06-02  Jess Mahan <ctunnel-`date +%s`@nardcore.org>
+	* 0.4 Release
+	* Switched from fork() to pthreads
+	* win32 support
+	* OpenSSL and libgcrypt init cleanup and optimization
+	* Added support for custom packet sizes
+	* Fixed compression comnmand line switch. Now accepts argument
+	* Fixed LDFLAGS in /src/Makefile to detect crypto engine type
+	* Fixed type-o's in manpage/help
+
+2010-05-15  Jess Mahan <ctunnel-`date +%s`@nardcore.org>
+
+	* 0.3 Release
+	* libgcrypt support
+	* libz compression support
+	* UDP tunnel support
+	* split source into multiple files 
+
+2008-08-26  Jess Mahan <ctunnel-`date +%s`@nardcore.org>
+
+	* 0.2 Fixed bug in name resolution in function tcp_connect
+
+2008-08-18  Jess Mahan <ctunnel-`date +%s`@nardcore.org>
+
+	* 0.1 Initial Release

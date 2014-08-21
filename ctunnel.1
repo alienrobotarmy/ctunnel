@@ -1,0 +1,174 @@
+.TH CTUNNEL 1 "Aug 04, 2014"
+.SH NAME
+ctunnel \- Cryptographic tunnel and VPN for TCP and UDP protocols.
+.SH SYNOPSIS
+.B ctunnel [options]
+.SH DESCRIPTION
+This manual page documents briefly the
+.B ctunnel
+command.
+.PP
+\fBctunnel\fP is a command line program for tunneling and/or proxying TCP or UDP
+connections via a cryptographic tunnel and establishing Virtual Private Networks (VPN).
+
+ctunnel can be used to secure any existing TCP or UDP based protocol, such
+as (but not limited to) HTTP, Telnet, FTP, RSH, MySQL, VNC, SSH, XDMCP and NFS.
+
+ctunnel can also proxy connections (plain or cryptographically), effectivly bouncing a cryptographic tunnel via any number of intermediary hosts (at a loss of speed of course).
+
+.SH OPTIONS
+.TP
+.B \-V
+Operate in VPN mode. 
+(Default uses TUNTAP, or specify -P for PPP mode)
+.RS 
+.TP
+.B \-t # TUN/PPP Device number
+.TP
+.B \-i VPN PTP Pool (10.0.5.0 default)
+.TP
+.B \-r Routes to push to remote host (comma separated. Does not work with -P)
+.TP
+.B \-P full path to ppp executable and arguments (include "unit #") to match -t device number 
+.RE
+.TP
+.B \-U
+Use the UDP Protocol (if not set, use TCP by default)
+.TP
+.B \-n
+Stay in the foreground, do not daemonize.
+.TP
+.B \-p
+Print Stored Key, IV, and Cipher then exit.
+.TP
+.B \-k [filename]
+.br 
+(optional) Specify keyfile.
+.TP
+.B \-v
+Print version iformation then exit.
+.TP
+.B \-S
+(optional) Show bandwidth meter.
+.TP
+.B \-h
+Print usage syntax.
+.TP
+.B \-z #
+Enable libz compression on the tunnel. Optionally supply a compression level (0-9), default is 5. Note: Good for slow connections, however this can actually slow down a fast connection.
+.TP
+.B \-b #
+Packet buffer size in bytes. Default is 2048. Note: When using high compression ratios, increasing this number can help speed up latent connections.
+.TP
+.B \-c
+(manditory) Operate in Client Mode. (do not use with -s)
+.TP
+.B \-s
+(manditory) Operate in Server Mode. (do not use with -c)
+.TP
+.B \-l
+[ip/hostname]:[port]
+.br
+(manditory) Listen for TCP/UDP connections on hostname:port.
+.TP
+.B \-f
+[ip/hostname]:[port]
+.br
+(manditory) Forward TCP/UDP from -l to this hostname:port.
+.TP
+.B \-e
+Execute argument after connection is established
+.br
+Evironment variables CTUNNEL_GATEWAY, CTUNNEL_SOUCRE, CTUNNEL_ROUTES, and CTUNNEL_DEV are set prior to exec
+.TP
+.B \-C
+(manditory) Encrypt TCP/UDP packets with this ciper. See CIPHERS below.
+.TP
+.B \-M
+(manditory/libgcrypt only) Encryption mode for -C CIPHER. See CIPHERS below.
+.SH KEYS
+.P
+On first invocation (or when then ~/.passkey file is missing), ctunnel will 
+prompt via STDIN for a Key and IV.
+
+After you input your Key and IV, ctunnel will automatically use the Key and IV it stores in ~/.passkey until this file is removed.
+
+It is IMPERATIVE that this keyfile (~/.passkey) be protected with STRONG permissions. Anyone with access to this Key and IV can potentially decrypt your stream. 
+.SH CIPHERS
+.P
+In order for ctunnel to reliably encrypt traffic, it relies on a synchronous stream cipher, such as RC4. Block Ciphers like AES in CFB or OFB ar supported. Other cipher modes might be supported.
+.P
+If "plain" or "proxy" is specified for the cipher no encryption will be used, and ctunnel will function in normal proxy mode.
+.P
+If ctunnel was compiled with OpenSSL, ciphers may be specified with only the -C option, in the OpenSSL format. Example:
+.RS
+-C aes-256-cfb
+.RE
+
+See ENC(1SSL) - SUPPORTED CIPHERS
+
+.P
+If ctunnel was compiled with libgcrypt, ciphers must be specified with the -C and -M options, for example:
+.RS
+-C aes256 -M cfb
+.RE
+.SH EXAMPLE
+.SS Mysql encrypted tunnel
+Server (remote machine):
+ ./ctunnel -s -l 2021 -f 3306 -H 127.0.0.1 -C aes256 -M cfb
+ 
+Client (local):
+ ./ctunnel -c -l 2020 -f 2021 -H <remote ip> -C aes256 -M cfb
+
+Now simply connect with the Mysql Client to the local end of the encrypted tunnel:
+ mysql -u root -p -h 127.0.0.1 -P 2020
+.SS Mysql encrypted tunnel proxy
+Server (remote machine);
+ ./ctunnel -s -H 127.0.0.1 -l 2224 -f 3306 -C aes-256-cfb
+
+Proxy (intermediary machine):
+ ./ctunnel -s -H 127.0.0.1 -l 2222 -f 2223 -C aes-256-cfb
+ ./ctunnel -c -H 10.0.0.4 -l 2223 -f 2224 -C aes-256-cfb
+
+Client (local):
+ ./ctunnel -c -H 10.0.0.3 -l 2221 -f 2222 -C aes-256-cfb
+
+This example provides an ecrypted tunnel from 10.0.0.3, via 10.0.0.4 to the remote machine.
+
+.SS VPN (Virtual Private Network)
+** Please note your system must have a TUNTAP driver. or pppd 
+
+** Not currently supported on Win32
+
+Server (remote machine)
+  echo 1 > /proc/sys/net/ipv4/ip_forward
+  iptables -t nat -A POSTROUTING -o tun0 -j SNAT --to 192.168.1.1
+ ./ctunnel -V -U -n -s -l *:1024 -C aes-128-cfb -r 192.168.1.0/23
+
+Client (local)
+ ./ctunnel -V -U -n -c -f server.ip:1024 -C aes-128-cfb -r 10.0.0.0/24
+
+This example creates a site to site VPN between Server and Client, as well as exchange routes between client and server with the '-r' switch. The Server is set to use device ppp1, instead of the default ppp0
+
+PPP Mode is the same as above, you'd just need to specify the path to pppd and arguments for the connection:
+
+Server
+  ./ctunnel -V -P '/usr/sbin/pppd nodetach noauth unit 1' -U -t 1 -n -s -l *:1024 -C aes-128-cfb
+
+Client
+  ./ctunnel -V -P '/usr/sbin/pppd nodetach noauth passive 10.0.5.2:10.0.5.1' -U -n -c -f server.ip:1024 -C aes-128-cfb
+
+PPP VPN does not exchange routes (like the TUNTAP mode does). Routes should be added via /etc/ppp/ip-up or pppd's ipparm argument.
+  
+
+.SH AUTHOR
+Written by Jess Mahan.
+.SH REPORTING BUGS
+Report bugs to ctunnel-`date +%s`@nardcore.org.
+Please include as much detail as possible.
+.SH COPYRIGHT
+Copyright \(co 2014 Jess Mahan.
+License  GPLv3+:  GNU
+GPL version 3 or later <http://gnu.org/licenses/gpl.html>.
+This  is  free  software:  you  are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
