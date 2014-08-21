@@ -26,7 +26,7 @@ Where to get it
 ----------------
 
   Official releases and snapshots may be obtained from the following location:
-  http://nardcore.org/ctunnel
+  http://alienrobotarmy.com/ctunnel
 
   You may also fork us on github!
 
