@@ -9,7 +9,7 @@ LDFLAGS=-lz -lpthread -lutil -lc
 ifeq ($(CRYPTO_TYPE),OPENSSL)
 LDFLAGS+=-lcrypto
 else
-LDFLAGS+=-lgcrypt
+LDFLAGS+=-lgcrypt -lgpg-error
 endif
 ifeq ($(TUNTAP),yes)
 objects := $(patsubst %.c,%.o,$(wildcard *.c))
