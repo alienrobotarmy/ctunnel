@@ -1,12 +1,11 @@
-Copyright (c) 2009-2014 Jess Mahan ctunnel@nardcore.org
+
+Copyright (c) 2009-2018 Jess Mahan ctunnel@alienrobotarmy.com
 
 ----------------
 ctunnel    0.7
 ----------------
 
-----------------
   What it is:
-----------------
     ctunnel is a software for proxying and forwarding TCP or UDP
     connections via a cryptographic or plain tunnel.
     
@@ -57,9 +56,7 @@ Examples
   How about an example?
 
   ** Note, the examples below are for OpenSSL            **
-  
   ** Substitute '-C aes-256-cfb' with '-C aes256 -M cfb' **
-  
   ** when compiled with libgcrypt                        **
 
   For instance, your local machine has an IP of 10.0.0.2. Now let's say you've 
@@ -68,11 +65,11 @@ Examples
 
   On the client machine (10.0.0.2) we'll run ctunnel.
 
-    ./ctunnel -H 10.0.0.4 -c -l 2221 -f 2222 -C aes-256-cfb
+    ./ctunnel -c -l 127.0.0.1:2221 -f 10.0.0.4:2222 -C aes-256-cfb
 
   On the server machine (10.0.0.4 running the vnc server) we'll also run ctunnel.
 
-    ./ctunnel -H 127.0.0.1 -s -l 2222 -f 2221 -C aes-256-cfb
+    ./ctunnel -s -l 10.0.0.4:2222 -f 127.0.0.1:5901 -C aes-256-cfb
 
   On the client machine (10.0.0.2) we run vncviewr throught the tunnel.
 
@@ -89,11 +86,11 @@ Examples
 
   Client/10.0.0.2
 
-    ./ctunnel -c -H 10.0.0.4 -l 2221 -f 3306 -C aes-256-cfb
+    ./ctunnel -c -l 127.0.0.1:2221 -f 10.0.0.4:2222 -C aes-256-cfb
 
   Server/10.0.0.4
 
-    ./ctunnel -s -H 127.0.0.1 -l 3306 -f 2221 -C aes-256-cfb
+    ./ctunnel -s -l 10.0.0.4:2222 -f 127.0.0.1:3306 -C aes-256-cfb
 
   Client
 
@@ -104,27 +101,27 @@ Examples
 
   Client/10.0.0.2
 
-    ./ctunnel -c -H 10.0.0.3 -l 2221 -f 2222 -C aes-256-cfb
+    ./ctunnel -c -l 127.0.0.1:2221 -f 10.0.0.3:2222 -C aes-256-cfb
 
   Proxy/10.0.0.3
 
-    ./ctunnel -s -H 127.0.0.1 -l 2222 -f 2223 -C aes-256-cfb &
-    ./ctunnel -c -H 10.0.0.4 -l 2223 -f 2224 -C aes-256-cfb
+    ./ctunnel -s -l 10.0.0.3:2222 -f 127.0.0.1:2223 -C aes-256-cfb &
+    ./ctunnel -c -l 127.0.0.1:2223 -f 10.0.0.4:2224 -C aes-256-cfb
 
   Server/10.0.0.4
 
-    ./ctunnel -s -H 127.0.0.1 -l 2224 -f 3306 -C aes-256-cfb
+    ./ctunnel -s -l 10.0.0.4:2224 -f localhost:3306 -C aes-256-cfb
 
 
   DNS:
 
   Server/10.0.0.3
 
-    ./ctunnel -U -n -s -l 5001 -f 53 -H localhost -C aes-256-cfb
+    ./ctunnel -U -n -s -l 0.0.0.0:5001 -f localhost:53 -C aes-256-cfb
 
   Client/10.0.0.2
-    ./ctunnel -U -n -c -l 53 -f 5001 -H 10.0.0.3 -C aes-256-cfb
-    dig @localhost nardcore.org
+    ./ctunnel -U -n -c -l 0.0.0.0:53 -f 10.0.0.3:5001 -C aes-256-cfb
+    dig @localhost alienrobotarmy.com 
 
 
   VPN:
@@ -196,7 +193,7 @@ Requirments
   TUNTAP is standard on Linux. For win32 and
   OSX, you will need a 3rd party tuntap driver such as the one budled
   with OpenVPN http://openvpn.net
-  
+
   VPN Mode may be used with PPP in place of TUNTAP. In this case you need
   a working pppd binary compiled for your system
 
@@ -217,7 +214,7 @@ Known Issues
   aes-256 cfb in mixed openssl / gcrypt implementations does not work, use
   aes-128 instead.
 
-  ussing PPP mode routes are not exchanged between endpoints. Routes should
+  Using PPP mode, routes are not exchanged between endpoints. Routes should
   not be added to the post up exec scrip. Routes should be added to ppp's 
   internal hook-script /etc/ppp/ip-up (or script passed to ipparam option
   to pppd).
@@ -265,3 +262,4 @@ Getting Help
 
   If you are still having trouble, feel free to contact me. I can
   be reached via ctunnel-<unixtimestamp>@nardcore.org
+
