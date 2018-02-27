@@ -86,7 +86,7 @@ Examples
 
   Client/10.0.0.2
 
-    ./ctunnel -c -l 127.0.0.1:2221 -f 10.0.0.4:2222 -C aes-256-cfb
+    ./ctunnel -c -l 127.0.0.1:3306 -f 10.0.0.4:2222 -C aes-256-cfb
 
   Server/10.0.0.4
 
@@ -126,7 +126,7 @@ Examples
 
   VPN:
   
-  (default uses TUN/TAP)
+  (TUN/TAP - default)
   Server/192.168.1.2
     ./ctunnel -V -U -n -s -l 192.168.1.2:1024 -C aes-128-cfb -r 192.168.1.0/24
 
@@ -174,7 +174,7 @@ Keys
   file. SO PROTECT IT! 
 
   On your first run of CTunnel you will be prompted to enter your Key and
-  IV in, after which CTunnel won't prompt you again until you remove
+  IV, after which CTunnel won't prompt you again until you remove
   your passkey file located in ~/.passkey
 
 
