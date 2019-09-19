@@ -14,13 +14,18 @@
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
+#include <openssl/opensslv.h>
 
 #include "ctunnel.h"
 
 #ifdef HAVE_OPENSSL
+
+
 crypto_ctx *openssl_crypto_init(struct options opt, int dir)
 {
-    crypto_ctx *ctx = calloc(1, sizeof(crypto_ctx));
+    //HMAC_CTX *hm_ctx= HMAC_CTX_new();
+    //crypto_ctx *ctx = calloc(1, sizeof(crypto_ctx));
+    crypto_ctx *ctx =  EVP_CIPHER_CTX_new();
 
     if (opt.proxy == 0) {
 
@@ -47,7 +52,7 @@ void openssl_crypto_reset(crypto_ctx *ctx, struct options opt, int dir)
 void openssl_crypto_deinit(crypto_ctx *ctx)
 {
     EVP_CIPHER_CTX_cleanup(ctx);
-    free(ctx);
+    EVP_CIPHER_CTX_free(ctx);
 }
 struct Packet openssl_do_encrypt(crypto_ctx *ctx, unsigned char *intext,
 				 int size)
