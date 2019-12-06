@@ -56,13 +56,13 @@ int cidr_to_mask(char *data, int cidr)
         order = 4;
 
     for (i = 0; i < order; i++) {
-        pow = 255 * pow;
+        pow = 256 * pow;
     }
 //    pow -= 2;
     for (i = 1; i < order; i++) {
         strncat(data, "255.", 4);
     }
-    msk = 255 - (pow >> cidr);
+    msk = 256 - (pow >> cidr);
     sprintf(data, "%s%d", data, msk);
     for (i = 0; i < 4 - order; i++)
         strncat(data, ".0", 2);
