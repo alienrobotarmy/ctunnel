@@ -16,7 +16,6 @@
 #include <errno.h>
 #include <openssl/opensslv.h>
 
-
 #include "ctunnel.h"
 
 #ifdef HAVE_OPENSSL
