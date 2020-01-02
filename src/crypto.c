@@ -14,22 +14,28 @@
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
+#include <openssl/opensslv.h>
+
 
 #include "ctunnel.h"
 
 #ifdef HAVE_OPENSSL
-crypto_ctx *openssl_crypto_init(struct options opt, int dir)
-{
-    crypto_ctx *ctx = calloc(1, sizeof(crypto_ctx));
+
+crypto_ctx *openssl_crypto_init(struct options opt, int dir) {
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+    crypto_ctx *ctx = calloc(1, sizeof (crypto_ctx));
+#else
+    crypto_ctx *ctx = EVP_CIPHER_CTX_new();
+#endif
 
     if (opt.proxy == 0) {
 
-    /* STREAM CIPHERS ONLY */
-    EVP_CIPHER_CTX_init(ctx);
-    EVP_CipherInit_ex(ctx, opt.key.cipher, NULL,
-                       opt.key.key, opt.key.iv, dir);
-    /* Encrypt final for UDP? */
-    EVP_CIPHER_CTX_set_padding(ctx, 1);
+        /* STREAM CIPHERS ONLY */
+        EVP_CIPHER_CTX_init(ctx);
+        EVP_CipherInit_ex(ctx, opt.key.cipher, NULL,
+                opt.key.key, opt.key.iv, dir);
+        /* Encrypt final for UDP? */
+        EVP_CIPHER_CTX_set_padding(ctx, 1);
     }
 
     return ctx;
@@ -47,7 +53,11 @@ void openssl_crypto_reset(crypto_ctx *ctx, struct options opt, int dir)
 void openssl_crypto_deinit(crypto_ctx *ctx)
 {
     EVP_CIPHER_CTX_cleanup(ctx);
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
     free(ctx);
+#else
+    EVP_CIPHER_CTX_free(ctx);
+#endif
 }
 struct Packet openssl_do_encrypt(crypto_ctx *ctx, unsigned char *intext,
 				 int size)
@@ -135,4 +145,4 @@ struct Packet gcrypt_do_decrypt(crypto_ctx ctx, unsigned char *intext,
 
     return crypto;
 }
-#endif
+#endif 
