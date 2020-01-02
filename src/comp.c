@@ -1,6 +1,6 @@
 /*
  * Ctunnel - Cyptographic tunnel.
- * Copyright (C) 2008-2014 Jess Mahan <ctunnel@nardcore.org>
+ * Copyright (C) 2008-2020 Jess Mahan <ctunnel@alienrobotarmy.com>
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,9 +26,10 @@ struct Compress z_compress_init(struct options opt)
     comp.deflate.zfree = Z_NULL;
     comp.deflate.opaque = Z_NULL;
     ret = deflateInit(&comp.deflate, opt.comp_level);
-    if (ret != Z_OK) {
-	ctunnel_log(stderr, LOG_CRIT, "Error Initializing Zlib (deflate)");
-	exit(1);
+    if (ret != Z_OK)
+    {
+        ctunnel_log(stderr, LOG_CRIT, "Error Initializing Zlib (deflate)");
+        exit(1);
     }
 
     comp.inflate.zalloc = Z_NULL;
@@ -37,9 +38,10 @@ struct Compress z_compress_init(struct options opt)
     comp.inflate.avail_in = 0;
     comp.inflate.next_in = Z_NULL;
     ret = inflateInit(&comp.inflate);
-    if (ret != Z_OK) {
-	ctunnel_log(stderr, LOG_CRIT, "Error Initializing Zlib (inflate)");
-	exit(1);
+    if (ret != Z_OK)
+    {
+        ctunnel_log(stderr, LOG_CRIT, "Error Initializing Zlib (inflate)");
+        exit(1);
     }
 
     return comp;
@@ -61,10 +63,10 @@ struct Packet z_compress(z_stream str, unsigned char *data, int size)
 
     comp.data = calloc(1, sizeof(char *) * 20048);
 
-
     str.avail_in = size;
     str.next_in = data;
-    do {
+    do
+    {
         str.avail_out = 20048;
         str.next_out = comp.data;
         //ret = deflate(&str, Z_PARTIAL_FLUSH);
@@ -77,7 +79,7 @@ struct Packet z_compress(z_stream str, unsigned char *data, int size)
 
 struct Packet z_uncompress(z_stream str, unsigned char *data, int size)
 {
-//    int ret = 0;
+    //    int ret = 0;
     struct Packet comp;
 
     comp.data = calloc(1, sizeof(char *) * 20048);
