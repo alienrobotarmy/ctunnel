@@ -1,3 +1,7 @@
+/*
+ * Ctunnel - Cyptographic tunnel.
+ * Copyright (C) 2008-2020 Jess Mahan <ctunnel@alienrobotarmy.com>
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -30,43 +34,55 @@ int run(char *f)
     extern char **environ;
     char ch;
 
-    if ((stat(f, &st)) < 0) {
+    if ((stat(f, &st)) < 0)
+    {
         ctunnel_log(stderr, LOG_CRIT, "%s: %s", f, strerror(errno));
         return -1;
     }
     args = calloc(1, sizeof(char **));
     tok = calloc(1, sizeof(struct JToken));
-    tok->so = 0; tok->eo = 0; tok->match = NULL;
-    for (i = 0; (ret = jtok(tok, f, ' ')) > 0; i++) {
-        args = realloc(args, sizeof(char **) * (i+1));
+    tok->so = 0;
+    tok->eo = 0;
+    tok->match = NULL;
+    for (i = 0; (ret = jtok(tok, f, ' ')) > 0; i++)
+    {
+        args = realloc(args, sizeof(char **) * (i + 1));
         args[i] = strdup(tok->match);
     }
     free(tok->match);
     free(tok);
-    args = realloc(args, sizeof(char **) * (i+1));
+    args = realloc(args, sizeof(char **) * (i + 1));
     args[i] = NULL;
 
     pipe(sout);
 
-    if ((pid = fork()) == 0) {
-    /*
+    if ((pid = fork()) == 0)
+    {
+        /*
         if (ct->net_cli->sockfd > 3)
             close(ct->net_cli->sockfd);
         if (ct->net_srv->sockfd > 3)
             close(ct->net_srv->sockfd);
     */
         setsid();
-        dup2(sout[W], fileno(stdout)); dup2(sout[W], fileno(stderr));
+        dup2(sout[W], fileno(stdout));
+        dup2(sout[W], fileno(stderr));
         close(sout[R]);
         execve(args[0], args, environ);
-    } else {
+    }
+    else
+    {
         close(sout[W]);
-        while (read(sout[R], &ch, sizeof(char))) {
-            if (ch != '\n') {
+        while (read(sout[R], &ch, sizeof(char)))
+        {
+            if (ch != '\n')
+            {
                 data[i++] = ch;
-            } else {
+            }
+            else
+            {
                 ctunnel_log(stdout, LOG_INFO, "[exec] %s", data);
-                i=0;
+                i = 0;
                 memset(data, 0, sizeof(data));
             }
         }
@@ -78,13 +94,13 @@ int run(char *f)
     free(args);
 
     return WEXITSTATUS(ret);
-    #else
+#else
     return 0;
-    #endif
+#endif
 }
 int prun(char *f)
 {
-    int p =0;
+    int p = 0;
 #ifndef _WIN32
     pid_t pid;
     int i, ret;
@@ -98,24 +114,30 @@ int prun(char *f)
 
     args = calloc(1, sizeof(char **));
     tok = calloc(1, sizeof(struct JToken));
-    tok->so = 0; tok->eo = 0; tok->match = NULL;
-    for (i = 0; (ret = jtok(tok, f, ' ')) > 0; i++) {
-        args = realloc(args, sizeof(char **) * (i+1));
+    tok->so = 0;
+    tok->eo = 0;
+    tok->match = NULL;
+    for (i = 0; (ret = jtok(tok, f, ' ')) > 0; i++)
+    {
+        args = realloc(args, sizeof(char **) * (i + 1));
         args[i] = strdup(tok->match);
     }
     free(tok->match);
     free(tok);
-    args = realloc(args, sizeof(char **) * (i+1));
+    args = realloc(args, sizeof(char **) * (i + 1));
     args[i] = NULL;
 
-    if ((stat(args[0], &st)) < 0) {
+    if ((stat(args[0], &st)) < 0)
+    {
         ctunnel_log(stderr, LOG_CRIT, "prun %s: %s", f, strerror(errno));
         return -1;
     }
 
-    pipe(so); pipe(si);
+    pipe(so);
+    pipe(si);
 
-    if ((pid = forkpty(&p, NULL, NULL, NULL)) == 0) {
+    if ((pid = forkpty(&p, NULL, NULL, NULL)) == 0)
+    {
         execve(args[0], args, environ);
     }
     for (i = 0; args[i]; i++)

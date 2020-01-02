@@ -1,6 +1,6 @@
 /*
  * Ctunnel - Cyptographic tunnel.
- * Copyright (C) 2008-2014 Jess Mahan <ctunnel@nardcore.org>
+ * Copyright (C) 2008-2020 Jess Mahan <ctunnel@alienrobotarmy.com>
  */
 #include <stdio.h>
 #include <stdlib.h>

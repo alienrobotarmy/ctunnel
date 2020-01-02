@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 /*
- * jtok Copyright (C) 2011 Jess Mahan <code@nardcore.org>
+ * jtok Copyright (C) 2020 Jess Mahan <code@alienrobotarmy.com>
  *
  * jtok is a *better* string tokenizing routine. use this
  * in place of strtok(), strsep(), etc.
@@ -49,65 +49,71 @@
  * }
  */
 
-struct JToken {
+struct JToken
+{
     int so;
     int eo;
     char *match;
 };
 
-void jtok_init(struct JToken *tok) {
+void jtok_init(struct JToken *tok)
+{
     if (tok->match)
-	free(tok->match);
-    tok->so = 0; tok->eo = 0; tok->match = NULL;
+        free(tok->match);
+    tok->so = 0;
+    tok->eo = 0;
+    tok->match = NULL;
 }
 int jtok(struct JToken *tok, char *string, char delim)
 {
     int i = 0, x = 0, len = 0;
     char *p = string;
 
-
-    for (len = 0; *string++; len++);;
+    for (len = 0; *string++; len++)
+        ;
+    ;
     if (tok->so > 0 && tok->eo >= len)
-	return 0;
+        return 0;
     string = p;
 
-
     if (tok->eo > 0)
-	tok->eo++;
+        tok->eo++;
     tok->so = tok->eo;
 
-    if (tok->so == 0) 
-	while (*string++ == delim)
-	    tok->so = tok->eo++;
+    if (tok->so == 0)
+        while (*string++ == delim)
+            tok->so = tok->eo++;
     string = p;
 
     string += tok->so = tok->eo;
 
-
-    for (i = tok->so; *string; i++) {
-	if (*string == delim) {
-	    tok->eo = i;
-	    if (tok->match)
-		free(tok->match);
-	    tok->match = calloc(sizeof(char), (tok->eo - tok->so) + 1);
-	    for (x = tok->so; x < tok->eo; x++)
-		tok->match[x - tok->so] = p[x];
-	    tok->match[x - tok->so] = '\0';
-	    string = p;
-	    return 1;
-	}
-	string++;
+    for (i = tok->so; *string; i++)
+    {
+        if (*string == delim)
+        {
+            tok->eo = i;
+            if (tok->match)
+                free(tok->match);
+            tok->match = calloc(sizeof(char), (tok->eo - tok->so) + 1);
+            for (x = tok->so; x < tok->eo; x++)
+                tok->match[x - tok->so] = p[x];
+            tok->match[x - tok->so] = '\0';
+            string = p;
+            return 1;
+        }
+        string++;
     }
-    if (tok->eo < len) {
-	tok->eo = len;
-	if (tok->match)
-	    free(tok->match);
-	tok->match = calloc(sizeof(char), (tok->eo - tok->so) + 1);
-	for (x = tok->so; x < tok->eo; x++)
-	    tok->match[x - tok->so] = p[x];
-	tok->match[x - tok->so] = '\0';
-	string = p;
-	return 1;
+    if (tok->eo < len)
+    {
+        tok->eo = len;
+        if (tok->match)
+            free(tok->match);
+        tok->match = calloc(sizeof(char), (tok->eo - tok->so) + 1);
+        for (x = tok->so; x < tok->eo; x++)
+            tok->match[x - tok->so] = p[x];
+        tok->match[x - tok->so] = '\0';
+        string = p;
+        return 1;
     }
     string = p;
     return 0;
