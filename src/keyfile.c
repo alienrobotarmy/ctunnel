@@ -57,7 +57,11 @@ int keyfile_read(struct options *opt, char *filename)
         free(passkey);
         return fd;
     }
-    read(fd, &opt->key, sizeof(struct keys));
+    if (read(fd, &opt->key, sizeof(struct keys)) == -1)
+    {
+        ctunnel_log(stderr, LOG_CRIT, "pipe(): %s", strerror(errno));
+        return -1;
+    }
     close(fd);
     free(passkey);
     return 1;
@@ -111,7 +115,11 @@ int keyfile_write(struct options *opt, char *filename)
         return fd;
     }
     opt->key.version = CONFIG_VERSION;
-    write(fd, &opt->key, sizeof(struct keys));
+    if (write(fd, &opt->key, sizeof(struct keys)) == -1)
+    {
+        ctunnel_log(stderr, LOG_CRIT, "pipe(): %s", strerror(errno));
+        return -1;
+    }
     close(fd);
     free(passkey);
     return 1;

@@ -277,7 +277,10 @@ void vpn_thread(void *arg)
 						else
 						{
 							data++;
-							write(ct->tunfd, data, ret - sizeof(int));
+							if (write(ct->tunfd, data, ret - sizeof(int)) == -1)
+							{
+								ctunnel_log(stderr, LOG_CRIT, "write() error");
+							}
 							data = rwind;
 						}
 					}

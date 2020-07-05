@@ -54,7 +54,11 @@ int run(char *f)
     args = realloc(args, sizeof(char **) * (i + 1));
     args[i] = NULL;
 
-    pipe(sout);
+    if (pipe(sout) == -1)
+    {
+        ctunnel_log(stderr, LOG_CRIT, "pipe(): %s", strerror(errno));
+        return -1;
+    }
 
     if ((pid = fork()) == 0)
     {
@@ -133,8 +137,17 @@ int prun(char *f)
         return -1;
     }
 
-    pipe(so);
-    pipe(si);
+    if (pipe(so) == -1)
+    {
+        ctunnel_log(stderr, LOG_CRIT, "pipe(): %s", strerror(errno));
+        return -1;
+    }
+
+    if (pipe(si) == -1)
+    {
+        ctunnel_log(stderr, LOG_CRIT, "pipe(): %s", strerror(errno));
+        return -1;
+    }
 
     if ((pid = forkpty(&p, NULL, NULL, NULL)) == 0)
     {
