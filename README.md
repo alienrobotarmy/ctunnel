@@ -124,7 +124,7 @@ Once the ctunnel is connected and the  VPN is established, it is up to you to ad
 
 ## Plaintext proxy
 
-Proxy TCP connections from localhost port 2202 to 10.0.0.2 port 22
+Proxy TCP connections with no encryption from 127.0.0.1 port 2202 to 10.0.0.2 port 22
 
 ```sh
 ctunnel -n -c -l 127.0.0.1:2202 -f 10.0.0.2:22 -C plain
