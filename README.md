@@ -122,6 +122,14 @@ Once the ctunnel is connected and the  VPN is established, it is up to you to ad
     dig @localhost alienrobotarmy.com 
 ```
 
+## Plaintext proxy
+
+Proxy TCP connections from localhost port 2202 to 10.0.0.2 port 22
+
+```sh
+ctunnel -n -c -l 127.0.0.1:2202 -f 10.0.0.2:22 -C plain
+```
+
 ----
 ## VPN Mode
 
