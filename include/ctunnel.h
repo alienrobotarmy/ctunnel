@@ -47,6 +47,9 @@ typedef void netbuf;
 #include "log.h"
 //#include "tunnel_thread.h"
 
+#define ROLE_CLIENT 0
+#define ROLE_SERVER 1
+
 struct xfer_stats
 {
     float bps;

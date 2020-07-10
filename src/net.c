@@ -283,7 +283,7 @@ netsock tcp_connect(char *ip, int port)
 
     if (servfd < 0)
     {
-        perror("connect");
+        ctunnel_log(stderr, LOG_CRIT, "tcp_connect() / connect(): %s", strerror(errno));
         return servfd;
     }
 

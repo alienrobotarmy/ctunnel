@@ -189,6 +189,10 @@ void vpn_loop(struct options opt)
 		if (opt.proto == TCP)
 		{
 			net_srv->sockfd = tcp_connect(opt.remote.ip, opt.remote.ps);
+			if (net_srv->sockfd < 0)
+			{
+				exit(1);
+			}
 			ctunnel[i]->net_srv = net_srv;
 		}
 		else

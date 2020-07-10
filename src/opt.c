@@ -133,10 +133,10 @@ struct options get_options(int argc, char *argv[])
 				exit(0);
 				break;
 			case 's':
-				opt.role = 1;
+				opt.role = ROLE_SERVER;
 				break;
 			case 'c':
-				opt.role = 0;
+				opt.role = ROLE_CLIENT;
 				break;
 			case 'n':
 				opt.daemon = 1;
@@ -269,12 +269,6 @@ struct options get_options(int argc, char *argv[])
 			}
 		}
 	}
-	if (opt.listen != 1 || opt.forward != 1)
-	{
-		fprintf(stdout,
-				"ERROR: Both -l and -f must be set\n");
-		exit(0);
-	}
 	if (opt.role < 0)
 	{
 		fprintf(stdout,
@@ -294,7 +288,26 @@ struct options get_options(int argc, char *argv[])
 	}
 	if (opt.vpn == 1)
 	{
+		if (opt.role == ROLE_SERVER && opt.listen != 1) // VPN mode, server must specify listen address/port
+		{
+			fprintf(stdout, "ERROR: -l must be specified\n");
+			exit(0);
+		}
+		if (opt.role == ROLE_CLIENT && opt.forward != 1) // VPN mode, client must specify forward/connect address/port
+		{
+			fprintf(stdout, "ERROR: -f must be specified\n");
+			exit(0);
+		}
 		opt.packet_size = opt.packet_size * sizeof(unsigned char *) + sizeof(int);
+	}
+	else
+	{
+		if (opt.listen != 1 || opt.forward != 1)
+		{
+			fprintf(stdout,
+					"ERROR: Both -l and -f must be set\n");
+			exit(0);
+		}
 	}
 	if ((strlen(opt.pool)) < 1)
 	{

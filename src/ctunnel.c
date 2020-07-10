@@ -78,8 +78,12 @@ int main(int argc, char *argv[])
 		}
 		else
 		{
-			ctunnel_log(stdout, LOG_INFO, "TCP [PROXY] Listening on %s:%d",
-						opt.local.ip, opt.local.ps);
+			if (opt.role == ROLE_SERVER)
+				ctunnel_log(stdout, LOG_INFO, "UDP [PROXY] Listening on %s:%d",
+							opt.local.ip, opt.local.ps);
+			else
+				ctunnel_log(stdout, LOG_INFO, "UDP [PROXY] Forwarding to %s:%d",
+							opt.remote.ip, opt.remote.ps);
 		}
 	}
 	else
@@ -108,8 +112,12 @@ int main(int argc, char *argv[])
 		}
 		else
 		{
-			ctunnel_log(stdout, LOG_INFO, "UDP [PROXY] Listening on %s:%d",
-						opt.local.ip, opt.local.ps);
+			if (opt.role == ROLE_SERVER)
+				ctunnel_log(stdout, LOG_INFO, "UDP [PROXY] Listening on %s:%d",
+							opt.local.ip, opt.local.ps);
+			else
+				ctunnel_log(stdout, LOG_INFO, "UDP [PROXY] Forwarding to %s:%d",
+							opt.remote.ip, opt.remote.ps);
 		}
 	}
 
