@@ -20,7 +20,7 @@
  * 
  * Return Value:
  *
- * jotk returns an integer.
+ * jtok returns an integer.
  * 0 = No token found;
  * 1 = Token found;
  * Even if no token was found jtok will still copy the contents of

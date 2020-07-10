@@ -127,7 +127,7 @@ Once the ctunnel is connected and the  VPN is established, it is up to you to ad
 Proxy TCP connections with no encryption from 127.0.0.1 port 2202 to 10.0.0.2 port 22
 
 ```sh
-ctunnel -n -c -l 127.0.0.1:2202 -f 10.0.0.2:22 -C plain
+    ./ctunnel -n -c -l 127.0.0.1:2202 -f 10.0.0.2:22 -C plain
 ```
 
 ----
@@ -263,6 +263,7 @@ If you are still having trouble, please create an issue on our github page: http
 VPN Checklist:
 - Did you check if IP Forwarding is enabled in the kernel?
 - Do you have routes pointing correctly to your destination network?
+- Did you specify `-U`? Remember, TCP is the default for ctunnel, but VPN's don't work well in TCP mode.
 
 ----
 
