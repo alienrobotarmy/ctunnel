@@ -47,16 +47,18 @@ typedef void netbuf;
 #include "log.h"
 //#include "tunnel_thread.h"
 
-struct xfer_stats {
+struct xfer_stats
+{
     float bps;
     long double total_l;
-    char  units[5];
+    char units[5];
     char ticker[5];
     int ticker_i;
     time_t time_l;
 };
 
-struct Packet {
+struct Packet
+{
     unsigned char *data;
     int id;
     int type;
@@ -64,15 +66,18 @@ struct Packet {
     char dst[16];
     int len;
 };
-struct crypt {
+struct crypt
+{
     unsigned char *data;
     int len;
 };
-struct compression {
+struct compression
+{
     unsigned char *data;
     int len;
 };
-struct keys {
+struct keys
+{
     int version;
     unsigned char key[18];
     unsigned char iv[18];
@@ -84,16 +89,20 @@ struct keys {
     int mode;
 #endif
 };
-struct Host {
+struct Host
+{
     char *ip;
     int ps;
     int pe;
 };
-struct options {
-//    char host[255];
+struct options
+{
+    //    char host[255];
     int vpn;
     int port_listen;
     int port_forward;
+    int listen;
+    int forward;
     int role;
     int daemon;
     int proto;
@@ -120,23 +129,27 @@ struct options {
     char mode[25];
 #endif
 };
-struct Network_timer {
+struct Network_timer
+{
     clock_t start;
     clock_t now;
     float bps;
     float total;
 };
-struct Network_rate {
+struct Network_rate
+{
     struct Network_timer tx;
     struct Network_timer rx;
 };
-struct Network {
+struct Network
+{
     netsockaddr_in addr;
     netsock sockfd;
     netsocklen_t len;
     struct Network_rate rate;
 };
-struct Compress {
+struct Compress
+{
     z_stream deflate;
     z_stream inflate;
 };
@@ -152,7 +165,8 @@ struct Network_ent {
     unsigned long m;
 };
 */
-struct Networks {
+struct Networks
+{
     unsigned long dst;
     unsigned long msk;
 };
@@ -162,7 +176,8 @@ struct Networks {
     in_addr_t msk;
 };
 */
-struct Ctunnel {
+struct Ctunnel
+{
 #ifdef HAVE_OPENSSL
     crypto_ctx *ectx;
     crypto_ctx *dctx;
@@ -172,7 +187,7 @@ struct Ctunnel {
 #endif
     struct Network *net_cli;
     struct Network *net_srv;
-//    struct Networks nets[32];
+    //    struct Networks nets[32];
     int nets_t;
     struct Compress comp;
     struct options opt;
@@ -196,7 +211,8 @@ pthread_mutex_t mutex;
 int threads[MAX_THREADS];
 
 //char **hosts;
-struct Hosts {
+struct Hosts
+{
     struct Network *net;
     struct Networks n[254];
     char natip[32];
@@ -211,17 +227,17 @@ struct Hosts hosts[MAX_CLIENTS];
 int clients;
 
 #ifdef HAVE_OPENSSL
-struct Packet (*do_encrypt) (crypto_ctx *ctx, unsigned char *intext, int size);
-struct Packet (*do_decrypt) (crypto_ctx *ctx, unsigned char *intext, int size);
-crypto_ctx *(*crypto_init) (struct options opt, int dir);
-void (*crypto_deinit) (crypto_ctx *ctx);
-void (*crypto_reset) (crypto_ctx *ctx, struct options opt, int dir);
+struct Packet (*do_encrypt)(crypto_ctx *ctx, unsigned char *intext, int size);
+struct Packet (*do_decrypt)(crypto_ctx *ctx, unsigned char *intext, int size);
+crypto_ctx *(*crypto_init)(struct options opt, int dir);
+void (*crypto_deinit)(crypto_ctx *ctx);
+void (*crypto_reset)(crypto_ctx *ctx, struct options opt, int dir);
 #else
-struct Packet (*do_encrypt) (crypto_ctx ctx, unsigned char *intext, int size);
-struct Packet (*do_decrypt) (crypto_ctx ctx, unsigned char *intext, int size);
-crypto_ctx(*crypto_init) (struct options opt, int dir);
-void (*crypto_deinit) (crypto_ctx ctx);
-void (*crypto_reset) (crypto_ctx ctx, struct options opt, int dir);
+struct Packet (*do_encrypt)(crypto_ctx ctx, unsigned char *intext, int size);
+struct Packet (*do_decrypt)(crypto_ctx ctx, unsigned char *intext, int size);
+crypto_ctx (*crypto_init)(struct options opt, int dir);
+void (*crypto_deinit)(crypto_ctx ctx);
+void (*crypto_reset)(crypto_ctx ctx, struct options opt, int dir);
 #endif
 
 #define SERVER 1
@@ -231,13 +247,13 @@ void (*crypto_reset) (crypto_ctx ctx, struct options opt, int dir);
 #define VMODE_TUN 0
 #define VMODE_PPP 1
 #define PACKET_CONRQ 0x01 /* Connection request */
-#define PACKET_DATA  0x02 /* Raw Data */
-#define PACKET_PING  0x03 /* Hello */
+#define PACKET_DATA 0x02  /* Raw Data */
+#define PACKET_PING 0x03  /* Hello */
 #define PACKET_ROUTE 0x04 /* Routes follow */
 #define PACKET_HOSTN 0x05 /* Hostname */
 #define PACKET_CLNTR 0x06 /* Client Address response */
-#define PACKET_NRTE  0x07 /* No routes */
-#define PACKET_REUP  0x08 /* Request renegotiation */
+#define PACKET_NRTE 0x07  /* No routes */
+#define PACKET_REUP 0x08  /* Request renegotiation */
 
 #include "config.h"
 #include "comp.h"

@@ -94,6 +94,8 @@ struct options get_options(int argc, char *argv[])
 	opt.vpn = 0;
 	opt.port_listen = -1;
 	opt.port_forward = -1;
+	opt.listen = 0;
+	opt.forward = 0;
 	opt.role = -1;
 	opt.daemon = -1;
 	opt.proto = TCP; /* Default to TCP if nothing specified */
@@ -165,6 +167,7 @@ struct options get_options(int argc, char *argv[])
 			switch (argv[i][1])
 			{
 			case 'l':
+				opt.listen = 1;
 				if (argv[i + 1][0] != '-')
 				{
 					tok.match = NULL;
@@ -191,6 +194,7 @@ struct options get_options(int argc, char *argv[])
 					opt.keyfile = strdup(argv[i + 1]);
 				break;
 			case 'f':
+				opt.forward = 1;
 				if (argv[i + 1][0] != '-')
 				{
 					tok.match = NULL;
@@ -264,6 +268,12 @@ struct options get_options(int argc, char *argv[])
 				break;
 			}
 		}
+	}
+	if (opt.listen != 1 || opt.forward != 1)
+	{
+		fprintf(stdout,
+				"ERROR: Both -l and -f must be set\n");
+		exit(0);
 	}
 	if (opt.role < 0)
 	{
