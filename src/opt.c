@@ -51,7 +51,7 @@ void usage(void)
 #else
 					"./ctunnel [-U][-k][-n][-i][-v][-h][-b][-e][-z level] -c|-s -l ip:port -f ip:port -C cipher\n"
 #endif
-					"  -U\t(optional) Use UDP (default is TCP)\n"
+					"  -U\t(optional) Use with -U (UDP). (default is TCP)\n"
 					"  -n\t(optional) Do not fork into Background\n"
 					"  -p\t(optional) Print Stored Key, IV, and Cipher then exit\n"
 					"  -v\t(optional) Print Version information then exit\n"
