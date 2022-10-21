@@ -1,3 +1,6 @@
+#ifndef CTUNNEL_H_
+#define CTUNNEL_H_
+
 #ifdef HAVE_OPENSSL
 #include <openssl/evp.h>
 #include <openssl/bio.h>
@@ -204,14 +207,14 @@ struct Ctunnel
     char dst[32];
 };
 
-pthread_mutex_t mutex;
+static pthread_mutex_t mutex;
 
 #define KEYFILE "/.passkey"
 #define PACKET_SIZE 2048
 #define MAX_THREADS 2048
 #define MAX_CLIENTS 10
 
-int threads[MAX_THREADS];
+static int threads[MAX_THREADS];
 
 //char **hosts;
 struct Hosts
@@ -226,15 +229,15 @@ struct Hosts
     struct in_addr addr;
     time_t time;
 };
-struct Hosts hosts[MAX_CLIENTS];
-int clients;
+static struct Hosts hosts[MAX_CLIENTS];
+static int clients;
 
 #ifdef HAVE_OPENSSL
-struct Packet (*do_encrypt)(crypto_ctx *ctx, unsigned char *intext, int size);
-struct Packet (*do_decrypt)(crypto_ctx *ctx, unsigned char *intext, int size);
-crypto_ctx *(*crypto_init)(struct options opt, int dir);
-void (*crypto_deinit)(crypto_ctx *ctx);
-void (*crypto_reset)(crypto_ctx *ctx, struct options opt, int dir);
+static struct Packet (*do_encrypt)(crypto_ctx *ctx, unsigned char *intext, int size);
+static struct Packet (*do_decrypt)(crypto_ctx *ctx, unsigned char *intext, int size);
+static crypto_ctx *(*crypto_init)(struct options opt, int dir);
+static void (*crypto_deinit)(crypto_ctx *ctx);
+static void (*crypto_reset)(crypto_ctx *ctx, struct options opt, int dir);
 #else
 struct Packet (*do_encrypt)(crypto_ctx ctx, unsigned char *intext, int size);
 struct Packet (*do_decrypt)(crypto_ctx ctx, unsigned char *intext, int size);
@@ -273,3 +276,5 @@ void (*crypto_reset)(crypto_ctx ctx, struct options opt, int dir);
 #include "tunnel_loop.h"
 #include "exec.h"
 #include "keyfile.h"
+
+#endif
