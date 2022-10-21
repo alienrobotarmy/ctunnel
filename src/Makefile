@@ -1,7 +1,7 @@
 include ../Makefile.cfg
 CC=gcc
 BUILD=$(shell svnversion . | sed -e 's/^[0-9].*://g' -e 's/[a-zA-Z]//g')
-CFLAGS=-g -Wall -Wextra -Wcast-align -Wshadow -Wstrict-prototypes -O2 -Wno-unused-but-set-parameter -Wno-unused-variable ${OPTS} -DHAVE_$(CRYPTO_TYPE) -I../include -I./include
+CFLAGS=-g -Wall -Wextra -Wcast-align -Wshadow -Wstrict-prototypes -O2 -Wno-makunused-but-set-parameter -Wno-unused-variable ${OPTS} -DHAVE_$(CRYPTO_TYPE) -I../include -I./include
 LDFLAGS=-lz -lpthread -lutil -lc
 
 #objects := $(patsubst %.c,%.o,$(wildcard *.c))
